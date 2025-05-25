@@ -73,6 +73,24 @@ namespace SolarEnergyManagement
       }
     }
 
+    // Add these new event handlers for Enter key support
+    private void LoginTextBox_KeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.KeyCode == Keys.Enter)
+      {
+        LoginButton_Click(sender, e);
+      }
+    }
+
+    private void SignupTextBox_KeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.KeyCode == Keys.Enter)
+      {
+        SignupButton_Click(sender, e);
+      }
+    }
+
+    // Modified ShowLoginPanel function to support Enter key
     private void ShowLoginPanel()
     {
       this.Controls.Clear();
@@ -112,6 +130,7 @@ namespace SolarEnergyManagement
       usernameTextBox = new TextBox();
       usernameTextBox.Size = new Size(200, 25);
       usernameTextBox.Location = new Point(140, 112);
+      usernameTextBox.KeyDown += LoginTextBox_KeyDown; // Add Enter key support
 
       Label passwordLabel = new Label();
       passwordLabel.Text = "Password:";
@@ -122,6 +141,7 @@ namespace SolarEnergyManagement
       passwordTextBox.Size = new Size(200, 25);
       passwordTextBox.Location = new Point(140, 142);
       passwordTextBox.PasswordChar = '*';
+      passwordTextBox.KeyDown += LoginTextBox_KeyDown; // Add Enter key support
 
       Button loginButton = new Button();
       loginButton.Text = "Login";
@@ -157,6 +177,7 @@ namespace SolarEnergyManagement
       signupUsernameTextBox = new TextBox();
       signupUsernameTextBox.Size = new Size(200, 25);
       signupUsernameTextBox.Location = new Point(140, 357);
+      signupUsernameTextBox.KeyDown += SignupTextBox_KeyDown; // Add Enter key support
 
       Label signupEmailLabel = new Label();
       signupEmailLabel.Text = "Email:";
@@ -166,6 +187,7 @@ namespace SolarEnergyManagement
       signupEmailTextBox = new TextBox();
       signupEmailTextBox.Size = new Size(200, 25);
       signupEmailTextBox.Location = new Point(140, 387);
+      signupEmailTextBox.KeyDown += SignupTextBox_KeyDown; // Add Enter key support
 
       Label signupPasswordLabel = new Label();
       signupPasswordLabel.Text = "Password:";
@@ -176,6 +198,7 @@ namespace SolarEnergyManagement
       signupPasswordTextBox.Size = new Size(200, 25);
       signupPasswordTextBox.Location = new Point(140, 417);
       signupPasswordTextBox.PasswordChar = '*';
+      signupPasswordTextBox.KeyDown += SignupTextBox_KeyDown; // Add Enter key support
 
       Button signupButton = new Button();
       signupButton.Text = "Sign Up";
@@ -190,12 +213,12 @@ namespace SolarEnergyManagement
       exitLoginButton.Click += ExitButton_Click;
 
       loginPanel.Controls.AddRange(new Control[] {
-        titleLabel, loginLabel, usernameLabel, usernameTextBox,
-        passwordLabel, passwordTextBox, loginButton, adminLabel, adminLoginButton,
-        signupLabel, signupUsernameLabel, signupUsernameTextBox,
-        signupEmailLabel, signupEmailTextBox, signupPasswordLabel,
-        signupPasswordTextBox, signupButton, exitLoginButton
-    });
+    titleLabel, loginLabel, usernameLabel, usernameTextBox,
+    passwordLabel, passwordTextBox, loginButton, adminLabel, adminLoginButton,
+    signupLabel, signupUsernameLabel, signupUsernameTextBox,
+    signupEmailLabel, signupEmailTextBox, signupPasswordLabel,
+    signupPasswordTextBox, signupButton, exitLoginButton
+  });
 
       this.Controls.Add(loginPanel);
     }
@@ -1225,9 +1248,11 @@ namespace SolarEnergyManagement
     }
   }
 
+  // Modified AllDataViewForm class with delete functionality
   public partial class AllDataViewForm : Form
   {
     private ListBox allDataListBox;
+    private List<XElement> dataEntries; // Store the actual XML elements
 
     public AllDataViewForm()
     {
@@ -1238,7 +1263,7 @@ namespace SolarEnergyManagement
     private void InitializeComponent()
     {
       this.Text = "All Energy Data";
-      this.Size = new Size(800, 500);
+      this.Size = new Size(900, 600); // Made wider to accommodate new button
       this.StartPosition = FormStartPosition.CenterParent;
 
       Label titleLabel = new Label();
@@ -1249,30 +1274,36 @@ namespace SolarEnergyManagement
 
       allDataListBox = new ListBox();
       allDataListBox.Font = new Font("Consolas", 9);
-      allDataListBox.Size = new Size(750, 350);
+      allDataListBox.Size = new Size(850, 400); // Made wider
       allDataListBox.Location = new Point(20, 60);
 
       Button refreshButton = new Button();
       refreshButton.Text = "Refresh";
       refreshButton.Size = new Size(100, 35);
-      refreshButton.Location = new Point(20, 420);
+      refreshButton.Location = new Point(20, 480);
       refreshButton.Click += RefreshButton_Click;
+
+      Button deleteButton = new Button();
+      deleteButton.Text = "Delete Selected";
+      deleteButton.Size = new Size(120, 35);
+      deleteButton.Location = new Point(130, 480);
+      deleteButton.Click += DeleteButton_Click;
 
       Button exportButton = new Button();
       exportButton.Text = "Export All";
       exportButton.Size = new Size(100, 35);
-      exportButton.Location = new Point(130, 420);
+      exportButton.Location = new Point(260, 480);
       exportButton.Click += ExportButton_Click;
 
       Button closeButton = new Button();
       closeButton.Text = "Close";
       closeButton.Size = new Size(100, 35);
-      closeButton.Location = new Point(240, 420);
+      closeButton.Location = new Point(370, 480);
       closeButton.Click += CloseButton_Click;
 
       this.Controls.AddRange(new Control[] {
-                titleLabel, allDataListBox, refreshButton, exportButton, closeButton
-            });
+      titleLabel, allDataListBox, refreshButton, deleteButton, exportButton, closeButton
+    });
     }
 
     private void LoadAllData()
@@ -1280,10 +1311,13 @@ namespace SolarEnergyManagement
       try
       {
         allDataListBox.Items.Clear();
+        dataEntries = new List<XElement>(); // Clear the stored entries
+
         XDocument doc = XDocument.Load("energy_data.xml");
 
         var allEntries = doc.Descendants("Entry")
-            .OrderByDescending(e => e.Element("Timestamp")?.Value);
+            .OrderByDescending(e => e.Element("Timestamp")?.Value)
+            .ToList();
 
         foreach (var entry in allEntries)
         {
@@ -1293,12 +1327,57 @@ namespace SolarEnergyManagement
           string consumed = entry.Element("EnergyConsumed")?.Value ?? "0";
           string battery = entry.Element("BatteryLevel")?.Value ?? "0";
 
-          allDataListBox.Items.Add($"{timestamp} | User: {user} | Generated: {generated}kWh | Consumed: {consumed}kWh | Battery: {battery}%");
+          string displayText = $"{timestamp} | User: {user} | Generated: {generated}kWh | Consumed: {consumed}kWh | Battery: {battery}%";
+          allDataListBox.Items.Add(displayText);
+          dataEntries.Add(entry); // Store the corresponding XML element
         }
       }
       catch (Exception ex)
       {
         MessageBox.Show($"Failed to load data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+    }
+
+    private void DeleteButton_Click(object sender, EventArgs e)
+    {
+      if (allDataListBox.SelectedIndex == -1)
+      {
+        MessageBox.Show("Please select an entry to delete.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        return;
+      }
+
+      int selectedIndex = allDataListBox.SelectedIndex;
+      string selectedItem = allDataListBox.SelectedItem.ToString();
+
+      // Extract timestamp and user for confirmation
+      string[] parts = selectedItem.Split('|');
+      string timestamp = parts[0].Trim();
+      string userPart = parts[1].Trim();
+
+      var result = MessageBox.Show($"Are you sure you want to delete this entry?\n\n{timestamp}\n{userPart}",
+                                 "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+      if (result == DialogResult.Yes)
+      {
+        try
+        {
+          // Get the corresponding XML element
+          XElement entryToDelete = dataEntries[selectedIndex];
+
+          // Remove from XML document
+          entryToDelete.Remove();
+
+          // Save the updated XML
+          XDocument doc = XDocument.Load("energy_data.xml");
+          doc.Save("energy_data.xml");
+
+          MessageBox.Show("Entry deleted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+          LoadAllData(); // Refresh the list
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show($"Failed to delete entry: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
       }
     }
 
@@ -1308,42 +1387,42 @@ namespace SolarEnergyManagement
     }
 
     private void ExportButton_Click(object sender, EventArgs e)
-{
-    SaveFileDialog saveDialog = new SaveFileDialog();
-    saveDialog.Filter = "XML files (*.xml)|*.xml";
-    saveDialog.Title = "Export Energy Data";
-    saveDialog.FileName = $"energy_export_{DateTime.Now:yyyyMMdd_HHmmss}.xml";
-
-    // Temporarily disable TopMost for main form if it's set
-    bool wasTopMost = this.TopMost;
-    if (wasTopMost) this.TopMost = false;
-
-    if (saveDialog.ShowDialog() == DialogResult.OK)
     {
+      SaveFileDialog saveDialog = new SaveFileDialog();
+      saveDialog.Filter = "XML files (*.xml)|*.xml";
+      saveDialog.Title = "Export Energy Data";
+      saveDialog.FileName = $"energy_export_{DateTime.Now:yyyyMMdd_HHmmss}.xml";
+
+      // Temporarily disable TopMost for main form if it's set
+      bool wasTopMost = this.TopMost;
+      if (wasTopMost) this.TopMost = false;
+
+      if (saveDialog.ShowDialog() == DialogResult.OK)
+      {
         try
         {
-            XDocument doc = XDocument.Load("energy_data.xml");
-            var allEntries = doc.Descendants("Entry");
+          XDocument doc = XDocument.Load("energy_data.xml");
+          var allEntries = doc.Descendants("Entry");
 
-            XDocument exportDoc = new XDocument(
-                new XElement("EnergyDataExport",
-                    new XAttribute("ExportDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
-                    allEntries
-                )
-            );
+          XDocument exportDoc = new XDocument(
+              new XElement("EnergyDataExport",
+                  new XAttribute("ExportDate", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                  allEntries
+              )
+          );
 
-            exportDoc.Save(saveDialog.FileName);
-            MessageBox.Show("Data exported successfully!", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+          exportDoc.Save(saveDialog.FileName);
+          MessageBox.Show("Data exported successfully!", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Export failed: {ex.Message}", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBox.Show($"Export failed: {ex.Message}", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-    }
+      }
 
-    // Restore TopMost state
-    if (wasTopMost) this.TopMost = true;
-}
+      // Restore TopMost state
+      if (wasTopMost) this.TopMost = true;
+    }
 
     private void CloseButton_Click(object sender, EventArgs e)
     {
