@@ -446,7 +446,7 @@ namespace SolarEnergyManagement
       addDataButton.Click += AddDataButton_Click;
 
       statusGroup.Controls.AddRange(new Control[] {
-    energyGeneratedLabel, energyConsumedLabel, batteryLevelLabel, addDataButton
+energyGeneratedLabel, energyConsumedLabel, batteryLevelLabel, addDataButton
 });
 
       // Admin Panel (only visible for admin) - Fixed minimum size
@@ -479,44 +479,59 @@ namespace SolarEnergyManagement
         viewAllDataButton.Click += ViewAllDataButton_Click;
 
         adminGroup.Controls.AddRange(new Control[] {
-        manageUsersButton, addUserButton, viewAllDataButton
-    });
+    manageUsersButton, addUserButton, viewAllDataButton
+});
       }
 
-      // Data Log - Positioned closer to other groups with larger minimum size
+      // Data Log - Positioned closer to other groups with constrained size to stay within window boundaries
       GroupBox logGroup = new GroupBox();
       logGroup.Text = "Energy Data Log (All Users)";
       logGroup.Font = new Font("Arial", 10, FontStyle.Bold);
-      logGroup.Size = new Size(Math.Max(550, this.ClientSize.Width - 380), Math.Max(400, this.ClientSize.Height - 180));
+
+      // Calculate available space but ensure it doesn't exceed initial window boundaries
+      // Use the current client size at dashboard initialization, not screen bounds
+      int availableWidth = Math.Max(550, this.ClientSize.Width - 380);
+      int availableHeight = Math.Max(400, this.ClientSize.Height - 180);
+
+      // Constrain the log group to reasonable maximum sizes to prevent overflow
+      int maxLogWidth = Math.Min(availableWidth, 800);  // Maximum width constraint
+      int maxLogHeight = Math.Min(availableHeight, 600); // Maximum height constraint
+
+      logGroup.Size = new Size(maxLogWidth, maxLogHeight);
       logGroup.Location = new Point(320, 100);
       logGroup.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 
       dataLogListBox = new ListBox();
       dataLogListBox.Font = new Font("Consolas", 12);
-      dataLogListBox.Size = new Size(Math.Max(520, logGroup.Width - 30), Math.Max(320, logGroup.Height - 80));
+
+      // Ensure listbox stays within the constrained log group boundaries
+      int listBoxWidth = Math.Max(520, maxLogWidth - 30);
+      int listBoxHeight = Math.Max(320, maxLogHeight - 80);
+
+      dataLogListBox.Size = new Size(listBoxWidth, listBoxHeight);
       dataLogListBox.Location = new Point(15, 25);
       dataLogListBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 
       Button refreshButton = new Button();
       refreshButton.Text = "Refresh Data";
       refreshButton.Size = new Size(100, 30);
-      refreshButton.Location = new Point(15, logGroup.Height - 45);
+      refreshButton.Location = new Point(15, maxLogHeight - 45);
       refreshButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
       refreshButton.Click += RefreshButton_Click;
 
       Button exportButton = new Button();
       exportButton.Text = "Export Data";
       exportButton.Size = new Size(100, 30);
-      exportButton.Location = new Point(125, logGroup.Height - 45);
+      exportButton.Location = new Point(125, maxLogHeight - 45);
       exportButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
       exportButton.Click += ExportButton_Click;
 
       logGroup.Controls.AddRange(new Control[] {
-    dataLogListBox, refreshButton, exportButton
+dataLogListBox, refreshButton, exportButton
 });
 
       var controlsToAdd = new List<Control> {
-    logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
+logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
 };
 
       if (adminGroup != null)
