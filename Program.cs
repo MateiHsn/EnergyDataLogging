@@ -540,7 +540,7 @@ energyGeneratedLabel, energyConsumedLabel, batteryLevelLabel, addDataButton
 
       logGroup.Size = new Size(availableWidth, availableHeight);
       logGroup.Location = new Point(logLeftMargin, statusTopMargin);
-      logGroup.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+      logGroup.Anchor = AnchorStyles.Top | AnchorStyles.Left;
 
       dataLogListBox = new ListBox();
       dataLogListBox.Font = new Font("Consolas", 12);
@@ -698,6 +698,12 @@ logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
     {
       if (dashboardPanel == null) return;
 
+      // Skip resizing when in fullscreen mode (borderless and maximized)
+      if (this.FormBorderStyle == FormBorderStyle.None && this.WindowState == FormWindowState.Maximized)
+      {
+        return;
+      }
+
       GroupBox logGroup = null;
 
       foreach (Control control in dashboardPanel.Controls)
@@ -716,8 +722,8 @@ logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
         int rightMargin = 320;
         int bottomMargin = 100;
 
-        int availableWidth = Math.Max(450, this.ClientSize.Width - logGroup.Location.X - rightMargin);
-        int availableHeight = Math.Max(400, this.ClientSize.Height - logGroup.Location.Y - bottomMargin);
+        int availableWidth = Math.Max(520, this.ClientSize.Width - logGroup.Location.X - rightMargin);
+        int availableHeight = Math.Max(320, this.ClientSize.Height - logGroup.Location.Y - bottomMargin);
 
         logGroup.Size = new Size(availableWidth, availableHeight);
 
