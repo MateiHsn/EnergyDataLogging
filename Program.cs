@@ -698,10 +698,15 @@ logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
     {
       if (dashboardPanel == null) return;
 
-      // Skip resizing when in fullscreen mode (borderless and maximized)
+      // Skip resizing when switching between fullscreen and windowed modes
       if (this.FormBorderStyle == FormBorderStyle.None && this.WindowState == FormWindowState.Maximized)
       {
-        return;
+        return; // In fullscreen mode
+      }
+
+      if (this.FormBorderStyle == FormBorderStyle.Sizable && this.WindowState == FormWindowState.Maximized)
+      {
+        return; // In windowed maximized mode
       }
 
       GroupBox logGroup = null;
