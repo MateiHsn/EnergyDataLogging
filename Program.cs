@@ -101,7 +101,14 @@ namespace SolarEnergyManagement
       this.MaximumSize = new Size(500, 650);
       this.WindowState = FormWindowState.Normal;
       this.FormBorderStyle = FormBorderStyle.FixedSingle; // Prevent resizing on login
-      this.StartPosition = FormStartPosition.CenterScreen;
+
+      // Always center the form on screen
+      this.StartPosition = FormStartPosition.Manual;
+      Rectangle screenBounds = Screen.PrimaryScreen.WorkingArea;
+      this.Location = new Point(
+        screenBounds.X + (screenBounds.Width - this.Width) / 2,
+        screenBounds.Y + (screenBounds.Height - this.Height) / 2
+      );
 
       loginPanel = new Panel();
       loginPanel.Dock = DockStyle.Fill;
@@ -411,6 +418,10 @@ namespace SolarEnergyManagement
       this.WindowState = FormWindowState.Maximized; // Then maximize
       this.StartPosition = FormStartPosition.Manual;
 
+      // Force the form to process the size change before creating controls
+      this.Refresh();
+      Application.DoEvents();
+
       dashboardPanel = new Panel();
       dashboardPanel.Dock = DockStyle.Fill;
       dashboardPanel.AutoScroll = true;
@@ -475,8 +486,8 @@ namespace SolarEnergyManagement
       addDataButton.Click += AddDataButton_Click;
 
       statusGroup.Controls.AddRange(new Control[] {
-    energyGeneratedLabel, energyConsumedLabel, batteryLevelLabel, addDataButton
-  });
+energyGeneratedLabel, energyConsumedLabel, batteryLevelLabel, addDataButton
+});
 
       // Admin Panel (only visible for admin) - Fixed position relative to status group
       GroupBox adminGroup = null;
@@ -509,8 +520,8 @@ namespace SolarEnergyManagement
         viewAllDataButton.Click += ViewAllDataButton_Click;
 
         adminGroup.Controls.AddRange(new Control[] {
-      manageUsersButton, addUserButton, viewAllDataButton
-    });
+  manageUsersButton, addUserButton, viewAllDataButton
+});
       }
 
       // Data Log - Positioned to the right of other groups with dynamic sizing
@@ -519,20 +530,17 @@ namespace SolarEnergyManagement
       logGroup.Text = "Energy Data Log (All Users)";
       logGroup.Font = new Font("Arial", 10, FontStyle.Bold);
 
-      // Calculate available space for the log group
+      // Calculate available space for the log group using actual client size
       int rightMargin = 40; // Right margin from screen edge
       int bottomMargin = 60; // Bottom margin from screen edge
 
-      // Use current client size for calculations, with fallback minimums
-      int clientWidth = Math.Max(1200, this.ClientSize.Width);
-      int clientHeight = Math.Max(700, this.ClientSize.Height);
-
-      int availableWidth = Math.Max(550, clientWidth - logLeftMargin - rightMargin);
-      int availableHeight = Math.Max(400, clientHeight - statusTopMargin - bottomMargin);
+      // Use actual client size now that form has been properly sized
+      int availableWidth = Math.Max(550, this.ClientSize.Width - logLeftMargin - rightMargin);
+      int availableHeight = Math.Max(400, this.ClientSize.Height - statusTopMargin - bottomMargin);
 
       logGroup.Size = new Size(availableWidth, availableHeight);
       logGroup.Location = new Point(logLeftMargin, statusTopMargin);
-      logGroup.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+      logGroup.Anchor = AnchorStyles.Top | AnchorStyles.Left;
 
       dataLogListBox = new ListBox();
       dataLogListBox.Font = new Font("Consolas", 12);
@@ -560,12 +568,12 @@ namespace SolarEnergyManagement
       exportButton.Click += ExportButton_Click;
 
       logGroup.Controls.AddRange(new Control[] {
-    dataLogListBox, refreshButton, exportButton
-  });
+dataLogListBox, refreshButton, exportButton
+});
 
       var controlsToAdd = new List<Control> {
-    logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
-  };
+logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
+};
 
       if (adminGroup != null)
         controlsToAdd.Add(adminGroup);
@@ -575,6 +583,7 @@ namespace SolarEnergyManagement
       this.Controls.Add(dashboardPanel);
       LoadEnergyData();
     }
+
 
     private void ManageUsersButton_Click(object sender, EventArgs e)
     {
@@ -689,6 +698,17 @@ namespace SolarEnergyManagement
     {
       if (dashboardPanel == null) return;
 
+      // Skip resizing when switching between fullscreen and windowed modes
+      if (this.FormBorderStyle == FormBorderStyle.None && this.WindowState == FormWindowState.Maximized)
+      {
+        return; // In fullscreen mode
+      }
+
+      if (this.FormBorderStyle == FormBorderStyle.Sizable && this.WindowState == FormWindowState.Maximized)
+      {
+        return; // In windowed maximized mode
+      }
+
       GroupBox logGroup = null;
 
       foreach (Control control in dashboardPanel.Controls)
@@ -707,8 +727,8 @@ namespace SolarEnergyManagement
         int rightMargin = 320;
         int bottomMargin = 100;
 
-        int availableWidth = Math.Max(450, this.ClientSize.Width - logGroup.Location.X - rightMargin);
-        int availableHeight = Math.Max(400, this.ClientSize.Height - logGroup.Location.Y - bottomMargin);
+        int availableWidth = Math.Max(520, this.ClientSize.Width - logGroup.Location.X - rightMargin);
+        int availableHeight = Math.Max(320, this.ClientSize.Height - logGroup.Location.Y - bottomMargin);
 
         logGroup.Size = new Size(availableWidth, availableHeight);
 
