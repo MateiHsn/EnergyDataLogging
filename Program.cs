@@ -654,9 +654,13 @@ namespace SolarEnergyManagement
 
       if (logGroup != null)
       {
-        // Only expand the log group, don't compress other elements
-        int availableWidth = Math.Max(450, this.ClientSize.Width - 480); // Minimum 450px width
-        int availableHeight = Math.Max(400, this.ClientSize.Height - 150); // Minimum 400px height
+        // Calculate available space with consistent margins
+        // LogGroup starts at (320, 100), so right margin should be 320 and bottom margin should be 100
+        int rightMargin = 320;
+        int bottomMargin = 100;
+
+        int availableWidth = Math.Max(450, this.ClientSize.Width - logGroup.Location.X - rightMargin);
+        int availableHeight = Math.Max(400, this.ClientSize.Height - logGroup.Location.Y - bottomMargin);
 
         logGroup.Size = new Size(availableWidth, availableHeight);
 
