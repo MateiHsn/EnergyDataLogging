@@ -393,35 +393,41 @@ namespace SolarEnergyManagement
       dashboardPanel.AutoScroll = true;
       dashboardPanel.BackColor = SystemColors.Control;
 
-      // Top left buttons group
+      // Top left buttons group - Use consistent margins from edges
+      int topMargin = 20;
+      int leftMargin = 20;
+      int buttonSpacing = 90; // Space between buttons
+
       Button logoutButton = new Button();
       logoutButton.Text = "Logout";
       logoutButton.Size = new Size(80, 30);
-      logoutButton.Location = new Point(20, 20);
+      logoutButton.Location = new Point(leftMargin, topMargin);
       logoutButton.Anchor = AnchorStyles.Top | AnchorStyles.Left;
       logoutButton.Click += LogoutButton_Click;
 
       Button fullscreenButton = new Button();
       fullscreenButton.Text = "Fullscreen"; // Always start with "Fullscreen" text
       fullscreenButton.Size = new Size(80, 30);
-      fullscreenButton.Location = new Point(110, 20);
+      fullscreenButton.Location = new Point(leftMargin + buttonSpacing, topMargin);
       fullscreenButton.Anchor = AnchorStyles.Top | AnchorStyles.Left;
       fullscreenButton.Click += FullscreenButton_Click;
 
-      // Header
+      // Header - Fixed margin from top buttons
+      int headerTopMargin = topMargin + 40; // 40px below the buttons
       Label headerLabel = new Label();
       headerLabel.Text = $"Solar Energy Dashboard - Welcome {currentUser}";
       headerLabel.Font = new Font("Arial", 16, FontStyle.Bold);
       headerLabel.Size = new Size(600, 30);
-      headerLabel.Location = new Point(20, 60);
+      headerLabel.Location = new Point(leftMargin, headerTopMargin);
       headerLabel.Anchor = AnchorStyles.Top | AnchorStyles.Left;
 
-      // Current Energy Status - Narrower size
+      // Current Energy Status - Fixed position relative to header
+      int statusTopMargin = headerTopMargin + 40; // 40px below header
       GroupBox statusGroup = new GroupBox();
       statusGroup.Text = "Current Status";
       statusGroup.Font = new Font("Arial", 10, FontStyle.Bold);
       statusGroup.Size = new Size(280, 200);
-      statusGroup.Location = new Point(20, 100);
+      statusGroup.Location = new Point(leftMargin, statusTopMargin);
       statusGroup.Anchor = AnchorStyles.Top | AnchorStyles.Left;
 
       energyGeneratedLabel = new Label();
@@ -446,18 +452,19 @@ namespace SolarEnergyManagement
       addDataButton.Click += AddDataButton_Click;
 
       statusGroup.Controls.AddRange(new Control[] {
-energyGeneratedLabel, energyConsumedLabel, batteryLevelLabel, addDataButton
-});
+    energyGeneratedLabel, energyConsumedLabel, batteryLevelLabel, addDataButton
+  });
 
-      // Admin Panel (only visible for admin) - Fixed minimum size
+      // Admin Panel (only visible for admin) - Fixed position relative to status group
       GroupBox adminGroup = null;
       if (isAdmin)
       {
+        int adminTopMargin = statusTopMargin + 210; // 210px below status group start (200px height + 10px spacing)
         adminGroup = new GroupBox();
         adminGroup.Text = "Admin Panel";
         adminGroup.Font = new Font("Arial", 10, FontStyle.Bold);
         adminGroup.Size = new Size(200, 200);
-        adminGroup.Location = new Point(20, 310);
+        adminGroup.Location = new Point(leftMargin, adminTopMargin);
         adminGroup.Anchor = AnchorStyles.Top | AnchorStyles.Left;
 
         Button manageUsersButton = new Button();
@@ -479,34 +486,37 @@ energyGeneratedLabel, energyConsumedLabel, batteryLevelLabel, addDataButton
         viewAllDataButton.Click += ViewAllDataButton_Click;
 
         adminGroup.Controls.AddRange(new Control[] {
-    manageUsersButton, addUserButton, viewAllDataButton
-});
+      manageUsersButton, addUserButton, viewAllDataButton
+    });
       }
 
-      // Data Log - Positioned closer to other groups with constrained size to stay within window boundaries
+      // Data Log - Positioned to the right of other groups with dynamic sizing
+      int logLeftMargin = 320; // Fixed left position
       GroupBox logGroup = new GroupBox();
       logGroup.Text = "Energy Data Log (All Users)";
       logGroup.Font = new Font("Arial", 10, FontStyle.Bold);
 
-      // Calculate available space but ensure it doesn't exceed initial window boundaries
-      // Use the current client size at dashboard initialization, not screen bounds
-      int availableWidth = Math.Max(550, this.ClientSize.Width - 380);
-      int availableHeight = Math.Max(400, this.ClientSize.Height - 180);
+      // Calculate available space for the log group
+      int rightMargin = 40; // Right margin from screen edge
+      int bottomMargin = 60; // Bottom margin from screen edge
 
-      // Constrain the log group to reasonable maximum sizes to prevent overflow
-      int maxLogWidth = Math.Min(availableWidth, 800);  // Maximum width constraint
-      int maxLogHeight = Math.Min(availableHeight, 600); // Maximum height constraint
+      // Use current client size for calculations, with fallback minimums
+      int clientWidth = Math.Max(1200, this.ClientSize.Width);
+      int clientHeight = Math.Max(700, this.ClientSize.Height);
 
-      logGroup.Size = new Size(maxLogWidth, maxLogHeight);
-      logGroup.Location = new Point(320, 100);
+      int availableWidth = Math.Max(550, clientWidth - logLeftMargin - rightMargin);
+      int availableHeight = Math.Max(400, clientHeight - statusTopMargin - bottomMargin);
+
+      logGroup.Size = new Size(availableWidth, availableHeight);
+      logGroup.Location = new Point(logLeftMargin, statusTopMargin);
       logGroup.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 
       dataLogListBox = new ListBox();
       dataLogListBox.Font = new Font("Consolas", 12);
 
-      // Ensure listbox stays within the constrained log group boundaries
-      int listBoxWidth = Math.Max(520, maxLogWidth - 30);
-      int listBoxHeight = Math.Max(320, maxLogHeight - 80);
+      // Calculate listbox size based on log group size
+      int listBoxWidth = Math.Max(520, availableWidth - 30);
+      int listBoxHeight = Math.Max(320, availableHeight - 80);
 
       dataLogListBox.Size = new Size(listBoxWidth, listBoxHeight);
       dataLogListBox.Location = new Point(15, 25);
@@ -515,24 +525,24 @@ energyGeneratedLabel, energyConsumedLabel, batteryLevelLabel, addDataButton
       Button refreshButton = new Button();
       refreshButton.Text = "Refresh Data";
       refreshButton.Size = new Size(100, 30);
-      refreshButton.Location = new Point(15, maxLogHeight - 45);
+      refreshButton.Location = new Point(15, availableHeight - 45);
       refreshButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
       refreshButton.Click += RefreshButton_Click;
 
       Button exportButton = new Button();
       exportButton.Text = "Export Data";
       exportButton.Size = new Size(100, 30);
-      exportButton.Location = new Point(125, maxLogHeight - 45);
+      exportButton.Location = new Point(125, availableHeight - 45);
       exportButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
       exportButton.Click += ExportButton_Click;
 
       logGroup.Controls.AddRange(new Control[] {
-dataLogListBox, refreshButton, exportButton
-});
+    dataLogListBox, refreshButton, exportButton
+  });
 
       var controlsToAdd = new List<Control> {
-logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
-};
+    logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
+  };
 
       if (adminGroup != null)
         controlsToAdd.Add(adminGroup);
