@@ -14,7 +14,7 @@ namespace SolarEnergyManagement
   {
     private string currentUser = "";
     private bool isAdmin = false;
-    private const string ADMIN_PASSWORD = "admin123"; // Preset admin password
+    private const string ADMIN_PASSWORD = "admin12345"; // Preset admin password
     private Panel loginPanel;
     private Panel dashboardPanel;
     private TextBox usernameTextBox;
@@ -114,10 +114,6 @@ namespace SolarEnergyManagement
       loginPanel.Dock = DockStyle.Fill;
       loginPanel.BackColor = SystemColors.Control;
 
-      // Calculate center X position for consistent alignment
-      int centerX = (this.Width - 200) / 2; // 200 is the width of text boxes
-      int labelX = centerX - 90; // Position labels to the left of text boxes
-
       // Title
       Label titleLabel = new Label();
       titleLabel.Text = "Solar Energy Management";
@@ -131,33 +127,33 @@ namespace SolarEnergyManagement
       loginLabel.Text = "Login";
       loginLabel.Font = new Font("Arial", 12, FontStyle.Bold);
       loginLabel.Size = new Size(100, 25);
-      loginLabel.Location = new Point(centerX, 80);
+      loginLabel.Location = new Point(50, 80);
 
       Label usernameLabel = new Label();
       usernameLabel.Text = "Username:";
       usernameLabel.Size = new Size(80, 20);
-      usernameLabel.Location = new Point(labelX, 115);
+      usernameLabel.Location = new Point(50, 115);
 
       usernameTextBox = new TextBox();
       usernameTextBox.Size = new Size(200, 25);
-      usernameTextBox.Location = new Point(centerX, 112);
+      usernameTextBox.Location = new Point(140, 112);
       usernameTextBox.KeyDown += LoginTextBox_KeyDown; // Add Enter key support
 
       Label passwordLabel = new Label();
       passwordLabel.Text = "Password:";
       passwordLabel.Size = new Size(80, 20);
-      passwordLabel.Location = new Point(labelX, 145);
+      passwordLabel.Location = new Point(50, 145);
 
       passwordTextBox = new TextBox();
       passwordTextBox.Size = new Size(200, 25);
-      passwordTextBox.Location = new Point(centerX, 142);
+      passwordTextBox.Location = new Point(140, 142);
       passwordTextBox.PasswordChar = '*';
       passwordTextBox.KeyDown += LoginTextBox_KeyDown; // Add Enter key support
 
       Button loginButton = new Button();
       loginButton.Text = "Login";
       loginButton.Size = new Size(100, 35);
-      loginButton.Location = new Point(centerX + 50, 180); // Center the button
+      loginButton.Location = new Point(140, 180);
       loginButton.Click += LoginButton_Click;
 
       // Admin Login section
@@ -165,12 +161,12 @@ namespace SolarEnergyManagement
       adminLabel.Text = "Admin Login";
       adminLabel.Font = new Font("Arial", 12, FontStyle.Bold);
       adminLabel.Size = new Size(120, 25);
-      adminLabel.Location = new Point(centerX - 10, 235);
+      adminLabel.Location = new Point(50, 235);
 
       Button adminLoginButton = new Button();
       adminLoginButton.Text = "Admin Login";
       adminLoginButton.Size = new Size(100, 35);
-      adminLoginButton.Location = new Point(centerX + 50, 270);
+      adminLoginButton.Location = new Point(140, 270);
       adminLoginButton.Click += AdminLoginButton_Click;
 
       // Signup section
@@ -178,58 +174,58 @@ namespace SolarEnergyManagement
       signupLabel.Text = "Sign Up";
       signupLabel.Font = new Font("Arial", 12, FontStyle.Bold);
       signupLabel.Size = new Size(100, 25);
-      signupLabel.Location = new Point(centerX, 325);
+      signupLabel.Location = new Point(50, 325);
 
       Label signupUsernameLabel = new Label();
       signupUsernameLabel.Text = "Username:";
       signupUsernameLabel.Size = new Size(80, 20);
-      signupUsernameLabel.Location = new Point(labelX, 360);
+      signupUsernameLabel.Location = new Point(50, 360);
 
       signupUsernameTextBox = new TextBox();
       signupUsernameTextBox.Size = new Size(200, 25);
-      signupUsernameTextBox.Location = new Point(centerX, 357);
+      signupUsernameTextBox.Location = new Point(140, 357);
       signupUsernameTextBox.KeyDown += SignupTextBox_KeyDown; // Add Enter key support
 
       Label signupEmailLabel = new Label();
       signupEmailLabel.Text = "Email:";
       signupEmailLabel.Size = new Size(80, 20);
-      signupEmailLabel.Location = new Point(labelX, 390);
+      signupEmailLabel.Location = new Point(50, 390);
 
       signupEmailTextBox = new TextBox();
       signupEmailTextBox.Size = new Size(200, 25);
-      signupEmailTextBox.Location = new Point(centerX, 387);
+      signupEmailTextBox.Location = new Point(140, 387);
       signupEmailTextBox.KeyDown += SignupTextBox_KeyDown; // Add Enter key support
 
       Label signupPasswordLabel = new Label();
       signupPasswordLabel.Text = "Password:";
       signupPasswordLabel.Size = new Size(80, 20);
-      signupPasswordLabel.Location = new Point(labelX, 420);
+      signupPasswordLabel.Location = new Point(50, 420);
 
       signupPasswordTextBox = new TextBox();
       signupPasswordTextBox.Size = new Size(200, 25);
-      signupPasswordTextBox.Location = new Point(centerX, 417);
+      signupPasswordTextBox.Location = new Point(140, 417);
       signupPasswordTextBox.PasswordChar = '*';
       signupPasswordTextBox.KeyDown += SignupTextBox_KeyDown; // Add Enter key support
 
       Button signupButton = new Button();
       signupButton.Text = "Sign Up";
       signupButton.Size = new Size(100, 35);
-      signupButton.Location = new Point(centerX + 50, 455);
+      signupButton.Location = new Point(140, 455);
       signupButton.Click += SignupButton_Click;
 
       Button exitLoginButton = new Button();
       exitLoginButton.Text = "Exit";
       exitLoginButton.Size = new Size(100, 35);
-      exitLoginButton.Location = new Point(centerX + 50, 500);
+      exitLoginButton.Location = new Point(140, 500);
       exitLoginButton.Click += ExitButton_Click;
 
       loginPanel.Controls.AddRange(new Control[] {
-titleLabel, loginLabel, usernameLabel, usernameTextBox,
-passwordLabel, passwordTextBox, loginButton, adminLabel, adminLoginButton,
-signupLabel, signupUsernameLabel, signupUsernameTextBox,
-signupEmailLabel, signupEmailTextBox, signupPasswordLabel,
-signupPasswordTextBox, signupButton, exitLoginButton
-});
+    titleLabel, loginLabel, usernameLabel, usernameTextBox,
+    passwordLabel, passwordTextBox, loginButton, adminLabel, adminLoginButton,
+    signupLabel, signupUsernameLabel, signupUsernameTextBox,
+    signupEmailLabel, signupEmailTextBox, signupPasswordLabel,
+    signupPasswordTextBox, signupButton, exitLoginButton
+  });
 
       this.Controls.Add(loginPanel);
     }
@@ -322,7 +318,7 @@ signupPasswordTextBox, signupButton, exitLoginButton
       if (!IsValidEmail(signupEmailTextBox.Text))
       {
         MessageBox.Show("Please enter a valid email address. Email must contain exactly one '@' symbol and a valid domain name.",
-                       "Invalid Email Format", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        "Invalid Email Format", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         return;
       }
 
@@ -340,46 +336,6 @@ signupPasswordTextBox, signupButton, exitLoginButton
         MessageBox.Show(createResult.ErrorMessage, "Signup Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
-
-    private (bool Success, string ErrorMessage) CreateUser(string username, string email, string password)
-    {
-      try
-      {
-        XDocument doc = XDocument.Load("users.xml");
-
-        // Check if username already exists
-        var existingUserByUsername = doc.Descendants("User")
-            .FirstOrDefault(u => u.Element("Username")?.Value == username);
-
-        if (existingUserByUsername != null)
-          return (false, "Username already exists!");
-
-        // Check if email already exists
-        var existingUserByEmail = doc.Descendants("User")
-            .FirstOrDefault(u => u.Element("Email")?.Value == email);
-
-        if (existingUserByEmail != null)
-          return (false, "Email address is already registered!");
-
-        // Add new user
-        string hashedPassword = HashPassword(password);
-        XElement newUser = new XElement("User",
-            new XElement("Username", username),
-            new XElement("Email", email),
-            new XElement("Password", hashedPassword),
-            new XElement("CreatedDate", DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"))
-        );
-
-        doc.Root.Add(newUser);
-        doc.Save("users.xml");
-        return (true, "");
-      }
-      catch
-      {
-        return (false, "An error occurred while creating the user account.");
-      }
-    }
-
 
     private bool ValidateLogin(string username, string password)
     {
@@ -400,37 +356,44 @@ signupPasswordTextBox, signupButton, exitLoginButton
       }
     }
 
-    //private bool CreateUser(string username, string email, string password)
-    //{
-    //  try
-    //  {
-    //    XDocument doc = XDocument.Load("users.xml");
+    private (bool Success, string ErrorMessage) CreateUser(string username, string email, string password)
+    {
+      try
+      {
+        XDocument doc = XDocument.Load("users.xml");
 
-    //    // Check if username already exists
-    //    var existingUser = doc.Descendants("User")
-    //        .FirstOrDefault(u => u.Element("Username")?.Value == username);
+        // Check if username already exists
+        var existingUserByUsername = doc.Descendants("User")
+                                        .FirstOrDefault(u => u.Element("Username")?.Value == username);
 
-    //    if (existingUser != null)
-    //      return false;
+        if (existingUserByUsername != null)
+          return (false, "Username already exists!");
 
-    //    // Add new user
-    //    string hashedPassword = HashPassword(password);
-    //    XElement newUser = new XElement("User",
-    //        new XElement("Username", username),
-    //        new XElement("Email", email),
-    //        new XElement("Password", hashedPassword),
-    //        new XElement("CreatedDate", DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"))
-    //    );
+        // Check if email already exists
+        var existingUserByEmail = doc.Descendants("User")
+                                     .FirstOrDefault(u => u.Element("Email")?.Value == email);
 
-    //    doc.Root.Add(newUser);
-    //    doc.Save("users.xml");
-    //    return true;
-    //  }
-    //  catch
-    //  {
-    //    return false;
-    //  }
-    //}
+        if (existingUserByEmail != null)
+          return (false, "Email address is already registered!");
+
+        // Add new user
+        string hashedPassword = HashPassword(password);
+        XElement newUser = new XElement("User",
+                                        new XElement("Username", username),
+                                        new XElement("Email", email),
+                                        new XElement("Password", hashedPassword),
+                                        new XElement("CreatedDate", DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"))
+                                       );
+
+        doc.Root.Add(newUser);
+        doc.Save("users.xml");
+        return (true, "");
+      }
+      catch
+      {
+        return (false, "An error occurred while creating the user account.");
+      }
+    }
 
     private string HashPassword(string password)
     {
@@ -644,13 +607,15 @@ logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
       addUserForm.TopMost = true; // Force dialog to stay on top
       if (addUserForm.ShowDialog() == DialogResult.OK)
       {
-        if (CreateUser(addUserForm.Username, addUserForm.Email, addUserForm.Password).Success == true)
+        var createResult = CreateUser(addUserForm.Username, addUserForm.Email, addUserForm.Password);
+
+        if (createResult.Success)
         {
           MessageBox.Show("User created successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         else
         {
-          MessageBox.Show("Username already exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBox.Show(createResult.ErrorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
     }
@@ -1314,7 +1279,8 @@ logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
     }
   }
 
-  // Modified AllDataViewForm class with delete functionality
+  // Modified AllDataViewForm class with multi-select delete functionality
+  // Modified AllDataViewForm class with multi-select delete functionality
   public partial class AllDataViewForm : Form
   {
     private ListBox allDataListBox;
@@ -1329,7 +1295,7 @@ logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
     private void InitializeComponent()
     {
       this.Text = "All Energy Data";
-      this.Size = new Size(900, 600); // Made wider to accommodate new button
+      this.Size = new Size(900, 600);
       this.StartPosition = FormStartPosition.CenterParent;
 
       Label titleLabel = new Label();
@@ -1338,37 +1304,52 @@ logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
       titleLabel.Size = new Size(300, 25);
       titleLabel.Location = new Point(20, 20);
 
+      // Add instructions label for multi-select
+      Label instructionLabel = new Label();
+      instructionLabel.Text = "Hold Ctrl to select multiple entries, or Shift to select a range";
+      instructionLabel.Font = new Font("Arial", 9, FontStyle.Italic);
+      instructionLabel.Size = new Size(400, 20);
+      instructionLabel.Location = new Point(20, 45);
+
       allDataListBox = new ListBox();
       allDataListBox.Font = new Font("Consolas", 9);
-      allDataListBox.Size = new Size(850, 400); // Made wider
-      allDataListBox.Location = new Point(20, 60);
+      allDataListBox.Size = new Size(850, 380); // Slightly smaller to accommodate instruction label
+      allDataListBox.Location = new Point(20, 70); // Moved down to accommodate instruction label
+      allDataListBox.SelectionMode = SelectionMode.MultiExtended; // Enable multi-select
+
+      Button selectAllButton = new Button();
+      selectAllButton.Text = "Select All";
+      selectAllButton.Size = new Size(100, 35);
+      selectAllButton.Location = new Point(20, 470);
+      selectAllButton.Click += SelectAllButton_Click;
 
       Button refreshButton = new Button();
       refreshButton.Text = "Refresh";
       refreshButton.Size = new Size(100, 35);
-      refreshButton.Location = new Point(20, 480);
+      refreshButton.Location = new Point(130, 470);
       refreshButton.Click += RefreshButton_Click;
 
       Button deleteButton = new Button();
       deleteButton.Text = "Delete Selected";
       deleteButton.Size = new Size(120, 35);
-      deleteButton.Location = new Point(130, 480);
+      deleteButton.Location = new Point(240, 470);
       deleteButton.Click += DeleteButton_Click;
 
       Button exportButton = new Button();
       exportButton.Text = "Export All";
       exportButton.Size = new Size(100, 35);
-      exportButton.Location = new Point(260, 480);
+      exportButton.Location = new Point(370, 470);
       exportButton.Click += ExportButton_Click;
 
       Button closeButton = new Button();
       closeButton.Text = "Close";
       closeButton.Size = new Size(100, 35);
-      closeButton.Location = new Point(370, 480);
+      closeButton.Location = new Point(480, 470);
       closeButton.Click += CloseButton_Click;
 
       this.Controls.AddRange(new Control[] {
-      titleLabel, allDataListBox, refreshButton, deleteButton, exportButton, closeButton
+      titleLabel, instructionLabel, allDataListBox, selectAllButton,
+      refreshButton, deleteButton, exportButton, closeButton
     });
     }
 
@@ -1404,45 +1385,83 @@ logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
       }
     }
 
+    private void SelectAllButton_Click(object sender, EventArgs e)
+    {
+      for (int i = 0; i < allDataListBox.Items.Count; i++)
+      {
+        allDataListBox.SetSelected(i, true);
+      }
+    }
+
     private void DeleteButton_Click(object sender, EventArgs e)
     {
-      if (allDataListBox.SelectedIndex == -1)
+      if (allDataListBox.SelectedIndices.Count == 0)
       {
-        MessageBox.Show("Please select an entry to delete.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        MessageBox.Show("Please select one or more entries to delete.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         return;
       }
 
-      int selectedIndex = allDataListBox.SelectedIndex;
-      string selectedItem = allDataListBox.SelectedItem.ToString();
+      int selectedCount = allDataListBox.SelectedIndices.Count;
+      string confirmMessage = selectedCount == 1
+        ? "Are you sure you want to delete the selected entry?"
+        : $"Are you sure you want to delete {selectedCount} selected entries?";
 
-      // Extract timestamp and user for confirmation
-      string[] parts = selectedItem.Split('|');
-      string timestamp = parts[0].Trim();
-      string userPart = parts[1].Trim();
-
-      var result = MessageBox.Show($"Are you sure you want to delete this entry?\n\n{timestamp}\n{userPart}",
-                                 "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+      var result = MessageBox.Show(confirmMessage, "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
       if (result == DialogResult.Yes)
       {
         try
         {
-          // Get the corresponding XML element
-          XElement entryToDelete = dataEntries[selectedIndex];
-
-          // Remove from XML document
-          entryToDelete.Remove();
-
-          // Save the updated XML
+          // Load the XML document fresh
           XDocument doc = XDocument.Load("energy_data.xml");
-          doc.Save("energy_data.xml");
 
-          MessageBox.Show("Entry deleted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-          LoadAllData(); // Refresh the list
+          // Get all selected indices and sort them in descending order
+          // This prevents index shifting issues when deleting multiple items
+          var selectedIndices = allDataListBox.SelectedIndices.Cast<int>().OrderByDescending(i => i).ToList();
+
+          int deletedCount = 0;
+
+          foreach (int selectedIndex in selectedIndices)
+          {
+            // Get the corresponding XML element from our stored list
+            XElement entryToDelete = dataEntries[selectedIndex];
+
+            // Find the matching element in the loaded document and remove it
+            var matchingEntry = doc.Descendants("Entry")
+                .FirstOrDefault(e =>
+                    e.Element("Timestamp")?.Value == entryToDelete.Element("Timestamp")?.Value &&
+                    e.Element("User")?.Value == entryToDelete.Element("User")?.Value &&
+                    e.Element("EnergyGenerated")?.Value == entryToDelete.Element("EnergyGenerated")?.Value &&
+                    e.Element("EnergyConsumed")?.Value == entryToDelete.Element("EnergyConsumed")?.Value &&
+                    e.Element("BatteryLevel")?.Value == entryToDelete.Element("BatteryLevel")?.Value);
+
+            if (matchingEntry != null)
+            {
+              matchingEntry.Remove();
+              deletedCount++;
+            }
+          }
+
+          if (deletedCount > 0)
+          {
+            // Save the updated XML document
+            doc.Save("energy_data.xml");
+
+            string successMessage = deletedCount == 1
+              ? "Entry deleted successfully!"
+              : $"{deletedCount} entries deleted successfully!";
+
+            MessageBox.Show(successMessage, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            LoadAllData(); // Refresh the list
+          }
+          else
+          {
+            MessageBox.Show("No entries were found in the database to delete.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }
         }
         catch (Exception ex)
         {
-          MessageBox.Show($"Failed to delete entry: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBox.Show($"Failed to delete entries: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
     }
