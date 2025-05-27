@@ -114,6 +114,10 @@ namespace SolarEnergyManagement
       loginPanel.Dock = DockStyle.Fill;
       loginPanel.BackColor = SystemColors.Control;
 
+      // Calculate center X position for consistent alignment
+      int centerX = (this.Width - 200) / 2; // 200 is the width of text boxes
+      int labelX = centerX - 90; // Position labels to the left of text boxes
+
       // Title
       Label titleLabel = new Label();
       titleLabel.Text = "Solar Energy Management";
@@ -127,33 +131,33 @@ namespace SolarEnergyManagement
       loginLabel.Text = "Login";
       loginLabel.Font = new Font("Arial", 12, FontStyle.Bold);
       loginLabel.Size = new Size(100, 25);
-      loginLabel.Location = new Point(50, 80);
+      loginLabel.Location = new Point(centerX, 80);
 
       Label usernameLabel = new Label();
       usernameLabel.Text = "Username:";
       usernameLabel.Size = new Size(80, 20);
-      usernameLabel.Location = new Point(50, 115);
+      usernameLabel.Location = new Point(labelX, 115);
 
       usernameTextBox = new TextBox();
       usernameTextBox.Size = new Size(200, 25);
-      usernameTextBox.Location = new Point(140, 112);
+      usernameTextBox.Location = new Point(centerX, 112);
       usernameTextBox.KeyDown += LoginTextBox_KeyDown; // Add Enter key support
 
       Label passwordLabel = new Label();
       passwordLabel.Text = "Password:";
       passwordLabel.Size = new Size(80, 20);
-      passwordLabel.Location = new Point(50, 145);
+      passwordLabel.Location = new Point(labelX, 145);
 
       passwordTextBox = new TextBox();
       passwordTextBox.Size = new Size(200, 25);
-      passwordTextBox.Location = new Point(140, 142);
+      passwordTextBox.Location = new Point(centerX, 142);
       passwordTextBox.PasswordChar = '*';
       passwordTextBox.KeyDown += LoginTextBox_KeyDown; // Add Enter key support
 
       Button loginButton = new Button();
       loginButton.Text = "Login";
       loginButton.Size = new Size(100, 35);
-      loginButton.Location = new Point(140, 180);
+      loginButton.Location = new Point(centerX + 50, 180); // Center the button
       loginButton.Click += LoginButton_Click;
 
       // Admin Login section
@@ -161,12 +165,12 @@ namespace SolarEnergyManagement
       adminLabel.Text = "Admin Login";
       adminLabel.Font = new Font("Arial", 12, FontStyle.Bold);
       adminLabel.Size = new Size(120, 25);
-      adminLabel.Location = new Point(50, 235);
+      adminLabel.Location = new Point(centerX - 10, 235);
 
       Button adminLoginButton = new Button();
       adminLoginButton.Text = "Admin Login";
       adminLoginButton.Size = new Size(100, 35);
-      adminLoginButton.Location = new Point(140, 270);
+      adminLoginButton.Location = new Point(centerX + 50, 270);
       adminLoginButton.Click += AdminLoginButton_Click;
 
       // Signup section
@@ -174,58 +178,58 @@ namespace SolarEnergyManagement
       signupLabel.Text = "Sign Up";
       signupLabel.Font = new Font("Arial", 12, FontStyle.Bold);
       signupLabel.Size = new Size(100, 25);
-      signupLabel.Location = new Point(50, 325);
+      signupLabel.Location = new Point(centerX, 325);
 
       Label signupUsernameLabel = new Label();
       signupUsernameLabel.Text = "Username:";
       signupUsernameLabel.Size = new Size(80, 20);
-      signupUsernameLabel.Location = new Point(50, 360);
+      signupUsernameLabel.Location = new Point(labelX, 360);
 
       signupUsernameTextBox = new TextBox();
       signupUsernameTextBox.Size = new Size(200, 25);
-      signupUsernameTextBox.Location = new Point(140, 357);
+      signupUsernameTextBox.Location = new Point(centerX, 357);
       signupUsernameTextBox.KeyDown += SignupTextBox_KeyDown; // Add Enter key support
 
       Label signupEmailLabel = new Label();
       signupEmailLabel.Text = "Email:";
       signupEmailLabel.Size = new Size(80, 20);
-      signupEmailLabel.Location = new Point(50, 390);
+      signupEmailLabel.Location = new Point(labelX, 390);
 
       signupEmailTextBox = new TextBox();
       signupEmailTextBox.Size = new Size(200, 25);
-      signupEmailTextBox.Location = new Point(140, 387);
+      signupEmailTextBox.Location = new Point(centerX, 387);
       signupEmailTextBox.KeyDown += SignupTextBox_KeyDown; // Add Enter key support
 
       Label signupPasswordLabel = new Label();
       signupPasswordLabel.Text = "Password:";
       signupPasswordLabel.Size = new Size(80, 20);
-      signupPasswordLabel.Location = new Point(50, 420);
+      signupPasswordLabel.Location = new Point(labelX, 420);
 
       signupPasswordTextBox = new TextBox();
       signupPasswordTextBox.Size = new Size(200, 25);
-      signupPasswordTextBox.Location = new Point(140, 417);
+      signupPasswordTextBox.Location = new Point(centerX, 417);
       signupPasswordTextBox.PasswordChar = '*';
       signupPasswordTextBox.KeyDown += SignupTextBox_KeyDown; // Add Enter key support
 
       Button signupButton = new Button();
       signupButton.Text = "Sign Up";
       signupButton.Size = new Size(100, 35);
-      signupButton.Location = new Point(140, 455);
+      signupButton.Location = new Point(centerX + 50, 455);
       signupButton.Click += SignupButton_Click;
 
       Button exitLoginButton = new Button();
       exitLoginButton.Text = "Exit";
       exitLoginButton.Size = new Size(100, 35);
-      exitLoginButton.Location = new Point(140, 500);
+      exitLoginButton.Location = new Point(centerX + 50, 500);
       exitLoginButton.Click += ExitButton_Click;
 
       loginPanel.Controls.AddRange(new Control[] {
-    titleLabel, loginLabel, usernameLabel, usernameTextBox,
-    passwordLabel, passwordTextBox, loginButton, adminLabel, adminLoginButton,
-    signupLabel, signupUsernameLabel, signupUsernameTextBox,
-    signupEmailLabel, signupEmailTextBox, signupPasswordLabel,
-    signupPasswordTextBox, signupButton, exitLoginButton
-  });
+titleLabel, loginLabel, usernameLabel, usernameTextBox,
+passwordLabel, passwordTextBox, loginButton, adminLabel, adminLoginButton,
+signupLabel, signupUsernameLabel, signupUsernameTextBox,
+signupEmailLabel, signupEmailTextBox, signupPasswordLabel,
+signupPasswordTextBox, signupButton, exitLoginButton
+});
 
       this.Controls.Add(loginPanel);
     }
