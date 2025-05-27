@@ -322,7 +322,9 @@ namespace SolarEnergyManagement
         return;
       }
 
-      if (CreateUser(signupUsernameTextBox.Text, signupEmailTextBox.Text, signupPasswordTextBox.Text))
+      var createResult = CreateUser(signupUsernameTextBox.Text, signupEmailTextBox.Text, signupPasswordTextBox.Text);
+
+      if (createResult.Success)
       {
         MessageBox.Show("Account created successfully! Please login.", "Signup Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
         signupUsernameTextBox.Clear();
@@ -331,9 +333,49 @@ namespace SolarEnergyManagement
       }
       else
       {
-        MessageBox.Show("Username already exists!", "Signup Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(createResult.ErrorMessage, "Signup Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
+
+    private (bool Success, string ErrorMessage) CreateUser(string username, string email, string password)
+    {
+      try
+      {
+        XDocument doc = XDocument.Load("users.xml");
+
+        // Check if username already exists
+        var existingUserByUsername = doc.Descendants("User")
+            .FirstOrDefault(u => u.Element("Username")?.Value == username);
+
+        if (existingUserByUsername != null)
+          return (false, "Username already exists!");
+
+        // Check if email already exists
+        var existingUserByEmail = doc.Descendants("User")
+            .FirstOrDefault(u => u.Element("Email")?.Value == email);
+
+        if (existingUserByEmail != null)
+          return (false, "Email address is already registered!");
+
+        // Add new user
+        string hashedPassword = HashPassword(password);
+        XElement newUser = new XElement("User",
+            new XElement("Username", username),
+            new XElement("Email", email),
+            new XElement("Password", hashedPassword),
+            new XElement("CreatedDate", DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"))
+        );
+
+        doc.Root.Add(newUser);
+        doc.Save("users.xml");
+        return (true, "");
+      }
+      catch
+      {
+        return (false, "An error occurred while creating the user account.");
+      }
+    }
+
 
     private bool ValidateLogin(string username, string password)
     {
@@ -354,37 +396,37 @@ namespace SolarEnergyManagement
       }
     }
 
-    private bool CreateUser(string username, string email, string password)
-    {
-      try
-      {
-        XDocument doc = XDocument.Load("users.xml");
+    //private bool CreateUser(string username, string email, string password)
+    //{
+    //  try
+    //  {
+    //    XDocument doc = XDocument.Load("users.xml");
 
-        // Check if username already exists
-        var existingUser = doc.Descendants("User")
-            .FirstOrDefault(u => u.Element("Username")?.Value == username);
+    //    // Check if username already exists
+    //    var existingUser = doc.Descendants("User")
+    //        .FirstOrDefault(u => u.Element("Username")?.Value == username);
 
-        if (existingUser != null)
-          return false;
+    //    if (existingUser != null)
+    //      return false;
 
-        // Add new user
-        string hashedPassword = HashPassword(password);
-        XElement newUser = new XElement("User",
-            new XElement("Username", username),
-            new XElement("Email", email),
-            new XElement("Password", hashedPassword),
-            new XElement("CreatedDate", DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"))
-        );
+    //    // Add new user
+    //    string hashedPassword = HashPassword(password);
+    //    XElement newUser = new XElement("User",
+    //        new XElement("Username", username),
+    //        new XElement("Email", email),
+    //        new XElement("Password", hashedPassword),
+    //        new XElement("CreatedDate", DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss"))
+    //    );
 
-        doc.Root.Add(newUser);
-        doc.Save("users.xml");
-        return true;
-      }
-      catch
-      {
-        return false;
-      }
-    }
+    //    doc.Root.Add(newUser);
+    //    doc.Save("users.xml");
+    //    return true;
+    //  }
+    //  catch
+    //  {
+    //    return false;
+    //  }
+    //}
 
     private string HashPassword(string password)
     {
@@ -598,7 +640,7 @@ logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
       addUserForm.TopMost = true; // Force dialog to stay on top
       if (addUserForm.ShowDialog() == DialogResult.OK)
       {
-        if (CreateUser(addUserForm.Username, addUserForm.Email, addUserForm.Password))
+        if (CreateUser(addUserForm.Username, addUserForm.Email, addUserForm.Password).Success == true)
         {
           MessageBox.Show("User created successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
