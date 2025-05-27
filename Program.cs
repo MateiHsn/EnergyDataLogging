@@ -305,35 +305,35 @@ namespace SolarEnergyManagement
     }
 
     private void SignupButton_Click(object sender, EventArgs e)
-{
-    if (string.IsNullOrWhiteSpace(signupUsernameTextBox.Text) ||
-        string.IsNullOrWhiteSpace(signupEmailTextBox.Text) ||
-        string.IsNullOrWhiteSpace(signupPasswordTextBox.Text))
     {
+      if (string.IsNullOrWhiteSpace(signupUsernameTextBox.Text) ||
+          string.IsNullOrWhiteSpace(signupEmailTextBox.Text) ||
+          string.IsNullOrWhiteSpace(signupPasswordTextBox.Text))
+      {
         MessageBox.Show("Please fill in all fields!", "Signup Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         return;
-    }
+      }
 
-    // Validate email format
-    if (!IsValidEmail(signupEmailTextBox.Text))
-    {
-        MessageBox.Show("Please enter a valid email address. Email must contain exactly one '@' symbol and a valid domain name.", 
+      // Validate email format
+      if (!IsValidEmail(signupEmailTextBox.Text))
+      {
+        MessageBox.Show("Please enter a valid email address. Email must contain exactly one '@' symbol and a valid domain name.",
                        "Invalid Email Format", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         return;
-    }
+      }
 
-    if (CreateUser(signupUsernameTextBox.Text, signupEmailTextBox.Text, signupPasswordTextBox.Text))
-    {
+      if (CreateUser(signupUsernameTextBox.Text, signupEmailTextBox.Text, signupPasswordTextBox.Text))
+      {
         MessageBox.Show("Account created successfully! Please login.", "Signup Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
         signupUsernameTextBox.Clear();
         signupEmailTextBox.Clear();
         signupPasswordTextBox.Clear();
-    }
-    else
-    {
+      }
+      else
+      {
         MessageBox.Show("Username already exists!", "Signup Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
-}
 
     private bool ValidateLogin(string username, string password)
     {
@@ -1083,7 +1083,7 @@ logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
       string selectedItem = usersListBox.SelectedItem.ToString();
       string username = selectedItem.Split(' ')[0]; // Extract username
 
-      var result = MessageBox.Show($"Are you sure you want to delete user '{username}'?", 
+      var result = MessageBox.Show($"Are you sure you want to delete user '{username}'?",
                                  "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
       if (result == DialogResult.Yes)
