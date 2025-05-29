@@ -14,7 +14,7 @@ namespace SolarEnergyManagement
   {
     private string currentUser = "";
     private bool isAdmin = false;
-    private const string ADMIN_PASSWORD = "admin12345"; // Preset admin password
+    private const string ADMIN_PASSWORD = "admin123"; // Preset admin password
     private Panel loginPanel;
     private Panel dashboardPanel;
     private TextBox usernameTextBox;
@@ -69,11 +69,10 @@ namespace SolarEnergyManagement
         XDocument dataDoc = new XDocument(
             new XElement("EnergyData")
         );
-        dataDoc.Save("energy_data.xml");
+        dataDoc.Save("energy_data.xml");   
       }
     }
 
-    // Add these new event handlers for Enter key support
     private void LoginTextBox_KeyDown(object sender, KeyEventArgs e)
     {
       if (e.KeyCode == Keys.Enter)
@@ -90,7 +89,6 @@ namespace SolarEnergyManagement
       }
     }
 
-    // Modified ShowLoginPanel function to support Enter key
     private void ShowLoginPanel()
     {
       this.Controls.Clear();
