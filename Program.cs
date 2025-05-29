@@ -58,8 +58,8 @@ namespace SolarEnergyManagement
       if (!File.Exists("users.xml"))
       {
         XDocument usersDoc = new XDocument(
-            new XElement("Users")
-        );
+                                           new XElement("Users")
+                                          );
         usersDoc.Save("users.xml");
       }
 
@@ -67,11 +67,47 @@ namespace SolarEnergyManagement
       if (!File.Exists("energy_data.xml"))
       {
         XDocument dataDoc = new XDocument(
-            new XElement("EnergyData")
-        );
-        dataDoc.Save("energy_data.xml");   
+                                          new XElement("EnergyData")
+                                         );
+        dataDoc.Save("energy_data.xml");
+      }
+
+      // Create login_log.xml if it doesn't exist
+      if (!File.Exists("login_log.xml"))
+      {
+        XDocument loginDoc = new XDocument(
+                                           new XElement("LoginLog")
+                                          );
+        loginDoc.Save("login_log.xml");
       }
     }
+
+    private void LogLoginAttempt(string username, bool isAdmin, bool success)
+    {
+      try
+      {
+        XDocument doc = XDocument.Load("login_log.xml");
+
+        XElement newEntry = new XElement("LoginEntry",
+                                         new XElement("Username", username),
+                                         new XElement("LoginType", isAdmin ? "Admin" : "User"),
+                                         new XElement("Success", success ? "Yes" : "No"),
+                                         new XElement("Timestamp", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+                                         new XElement("IPAddress", "Local"), // You can enhance this to get actual IP
+                                         new XElement("SessionId", Guid.NewGuid().ToString())
+                                        );
+
+        doc.Root.Add(newEntry);
+        doc.Save("login_log.xml");
+      }
+      catch (Exception ex)
+      {
+        // Silent logging failure to avoid disrupting login process
+        // You could optionally log this to a separate error log
+        System.Diagnostics.Debug.WriteLine($"Failed to log login attempt: {ex.Message}");
+      }
+    }
+
 
     private void LoginTextBox_KeyDown(object sender, KeyEventArgs e)
     {
@@ -271,7 +307,12 @@ namespace SolarEnergyManagement
 
     private void LoginButton_Click(object sender, EventArgs e)
     {
-      if (ValidateLogin(usernameTextBox.Text, passwordTextBox.Text))
+      bool loginSuccess = ValidateLogin(usernameTextBox.Text, passwordTextBox.Text);
+
+      // Log the login attempt
+      LogLoginAttempt(usernameTextBox.Text, false, loginSuccess);
+
+      if (loginSuccess)
       {
         currentUser = usernameTextBox.Text;
         isAdmin = false;
@@ -289,7 +330,12 @@ namespace SolarEnergyManagement
       adminForm.TopMost = true; // Force dialog to stay on top
       if (adminForm.ShowDialog() == DialogResult.OK)
       {
-        if (adminForm.Password == ADMIN_PASSWORD)
+        bool adminSuccess = (adminForm.Password == ADMIN_PASSWORD);
+
+        // Log the admin login attempt
+        LogLoginAttempt("Administrator", true, adminSuccess);
+
+        if (adminSuccess)
         {
           currentUser = "Administrator";
           isAdmin = true;
@@ -299,6 +345,11 @@ namespace SolarEnergyManagement
         {
           MessageBox.Show("Invalid admin password!", "Admin Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+      }
+      else
+      {
+        // Log failed admin login attempt (dialog was cancelled)
+        LogLoginAttempt("Administrator", true, false);
       }
     }
 
@@ -527,34 +578,34 @@ energyGeneratedLabel, energyConsumedLabel, batteryLevelLabel, addDataButton
         viewAllDataButton.Click += ViewAllDataButton_Click;
 
         adminGroup.Controls.AddRange(new Control[] {
-  manageUsersButton, addUserButton, viewAllDataButton
+manageUsersButton, addUserButton, viewAllDataButton
 });
       }
 
-      // Data Log - Positioned to the right of other groups with dynamic sizing
+      // Data Log - Positioned to the right of other groups with FIXED sizing for consistency
       int logLeftMargin = 320; // Fixed left position
       GroupBox logGroup = new GroupBox();
       logGroup.Text = "Energy Data Log (All Users)";
       logGroup.Font = new Font("Arial", 10, FontStyle.Bold);
 
-      // Calculate available space for the log group using actual client size
+      // Use fixed dimensions to ensure consistency between user and admin dashboards
       int rightMargin = 40; // Right margin from screen edge
       int bottomMargin = 60; // Bottom margin from screen edge
 
-      // Use actual client size now that form has been properly sized
-      int availableWidth = Math.Max(550, this.ClientSize.Width - logLeftMargin - rightMargin);
-      int availableHeight = Math.Max(400, this.ClientSize.Height - statusTopMargin - bottomMargin);
+      // Calculate fixed dimensions based on screen size (not dependent on admin panel presence)
+      int fixedLogWidth = Math.Max(550, this.ClientSize.Width - logLeftMargin - rightMargin);
+      int fixedLogHeight = Math.Max(400, this.ClientSize.Height - statusTopMargin - bottomMargin);
 
-      logGroup.Size = new Size(availableWidth, availableHeight);
+      logGroup.Size = new Size(fixedLogWidth, fixedLogHeight);
       logGroup.Location = new Point(logLeftMargin, statusTopMargin);
-      logGroup.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+      logGroup.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 
       dataLogListBox = new ListBox();
       dataLogListBox.Font = new Font("Consolas", 12);
 
-      // Calculate listbox size based on log group size
-      int listBoxWidth = Math.Max(520, availableWidth - 30);
-      int listBoxHeight = Math.Max(320, availableHeight - 80);
+      // Calculate listbox size based on fixed log group size
+      int listBoxWidth = Math.Max(520, fixedLogWidth - 30);
+      int listBoxHeight = Math.Max(320, fixedLogHeight - 80);
 
       dataLogListBox.Size = new Size(listBoxWidth, listBoxHeight);
       dataLogListBox.Location = new Point(15, 25);
@@ -563,14 +614,14 @@ energyGeneratedLabel, energyConsumedLabel, batteryLevelLabel, addDataButton
       Button refreshButton = new Button();
       refreshButton.Text = "Refresh Data";
       refreshButton.Size = new Size(100, 30);
-      refreshButton.Location = new Point(15, availableHeight - 45);
+      refreshButton.Location = new Point(15, fixedLogHeight - 45);
       refreshButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
       refreshButton.Click += RefreshButton_Click;
 
       Button exportButton = new Button();
       exportButton.Text = "Export Data";
       exportButton.Size = new Size(100, 30);
-      exportButton.Location = new Point(125, availableHeight - 45);
+      exportButton.Location = new Point(125, fixedLogHeight - 45);
       exportButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
       exportButton.Click += ExportButton_Click;
 
@@ -1277,8 +1328,6 @@ logoutButton, fullscreenButton, headerLabel, statusGroup, logGroup
     }
   }
 
-  // Modified AllDataViewForm class with multi-select delete functionality
-  // Modified AllDataViewForm class with multi-select delete functionality
   public partial class AllDataViewForm : Form
   {
     private ListBox allDataListBox;
