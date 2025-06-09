@@ -93,7 +93,7 @@ namespace SolarEnergyManagement
                                          new XElement("LoginType", isAdmin ? "Admin" : "User"),
                                          new XElement("Success", success ? "Yes" : "No"),
                                          new XElement("Timestamp", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
-                                         new XElement("IPAddress", "Local"), // You can enhance this to get actual IP
+                                         new XElement("IPAddress", "Local"),
                                          new XElement("SessionId", Guid.NewGuid().ToString())
                                         );
 
@@ -103,7 +103,6 @@ namespace SolarEnergyManagement
       catch (Exception ex)
       {
         // Silent logging failure to avoid disrupting login process
-        // You could optionally log this to a separate error log
         System.Diagnostics.Debug.WriteLine($"Failed to log login attempt: {ex.Message}");
       }
     }
